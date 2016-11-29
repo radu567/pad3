@@ -2,7 +2,11 @@ import socket
 import json
 import collections
 import queue
+import xml.etree.ElementTree as ET
 
+
+tree = ET.parse('d:\\Python\\pad3\\rezultat.xml')
+root = tree.getroot()
 
 MESSAGE_TYPE = collections.namedtuple('MessageType', ('client', 'node'))(*('client', 'node'))
 lista_date = queue.Queue()
@@ -51,6 +55,20 @@ while True:
             raspuns = raspuns.decode('utf-8')
             # adaugam raspunsul in lista de date
             print('raspunsul primit de la nod este : ', raspuns)
+
+            # aici incepem sa lucram cu datele primite pe care trebuie sa le punem in fisier xml
+
+            for element in root.iter('rezultat'):
+                new_row = 'node' + str(i)
+
+                adaugat = ET.SubElement(element, new_row)
+                adaugat.text = raspuns
+                adaugat.set('activ', 'yes')
+                ET.dump(adaugat)
+
+            tree.write('rezultat.xml')
+            # aici se termina lucrul cu fisierul xml
+
             lista_date.put(raspuns)
             sock_node.close()
             i += 1
