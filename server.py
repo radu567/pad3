@@ -33,8 +33,15 @@ class Nod(object):
             types = data.get('type')
 
             if types == MESSAGE_TYPE.node:
-                info = self.data.encode('utf-8')
-                clientsocket.send(info)
+
+                info = {
+                    'type': 'node',
+                    'message': self.data
+                }
+
+                jsonobj = json.dumps(info).encode('utf-8')
+                clientsocket.send(jsonobj)
+
                 print('am trimis nodului principal mesajul meu')
             else:
                 clientsocket.close()
